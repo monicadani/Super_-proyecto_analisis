@@ -26,7 +26,7 @@ myDiagram.nodeTemplate =
 		),
 		new go.Binding("location", "loc"),
 		$(go.TextBlock,
-			{ margin: 3, font: '20px sans' },
+			{ margin: 3, font: '20px sans',stroke: 'white' },
 			new go.Binding("text", "t")
 		)
 	);
@@ -52,7 +52,7 @@ myDiagram.linkTemplate =
 // Modelo inicial del grafo como ejemplo
 myDiagram.model = new go.GraphLinksModel(
 	[
-		{ t: "NOT", key: "1", color: "lightblue" },
+		{ t: "NOT", key: "1", color: "purple" },
 		{ t: "AND", key: "2", color: "orange" },
 		{ t: "OR", key: "3", color: "lightgreen" },
 		{ t: "XOR", key: "4", color: "pink" }
@@ -69,7 +69,7 @@ myDiagram.model = new go.GraphLinksModel(
 let modificarGrafo = (palabra) => {
 	console.log('-funciona-')
 
-	myDiagram.model.addNodeData({ t: palabra, key: "4", color: "lightblue" });
+	myDiagram.model.addNodeData({ t: palabra, key: "4", color: "purple" });
 	myDiagram.model.layout.Diagram(true);
 
 }
@@ -78,7 +78,7 @@ let modificarGrafo = (palabra) => {
 let setModel = (grafo) => {
 	let nodos = [];
 	for (let n of grafo.nodos) {
-		nodos.push({ t: n.dato, key: n.id, color: "lightgreen" });
+		nodos.push({ t: n.dato, key: n.id, color: "purple" });
 	}
 	let adyacencias = [];
 	for (let n of grafo.adyacencias) {
@@ -157,8 +157,9 @@ document.querySelector("#boton_crear_pers").addEventListener("click", () => {
 });
 
 function nuevo_grafo() {
+
+	console.log("prueba")
 	let nombre_grafo = document.querySelector('#nombre_grafo_pers').value;
-	let numero_nodos = document.querySelector('#numero_nodos_pers').value;
 	let error = false;
 	let des_error = '';
 
@@ -171,8 +172,8 @@ function nuevo_grafo() {
 
 
 	if (error == false) {
-		reinizializa_grafo();
 
+		reinizializa_grafo();
 	}
 
 	else {
@@ -180,16 +181,6 @@ function nuevo_grafo() {
 	}
 }
 
-
-let getRequestPers = (url) => {
-	axios.get(url).then(response => {
-		let grafo = response.data;
-		console.log(grafo);
-		setModel(grafo);
-	}).catch(error => {
-		console.log(error);
-	});
-}
 
 function reinizializa_grafo() {
 	myDiagram.model = new go.GraphLinksModel(
