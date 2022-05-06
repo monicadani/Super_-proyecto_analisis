@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+	<title>Pruebas Web</title>
+	<!-- Font Awesome -->
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+	<!-- Google Fonts -->
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+	<link rel=stylesheet href=https://cdn.jsdelivr.net/npm/pretty-print-json@1.0/dist/pretty-print-json.css>
+	<!-- Bootstrap core CSS -->
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+	<style type="text/css">
+		pre{
+			margin: 30px;
+			padding: 20px;
+			box-shadow: 1px -5px 37px 1px rgba(0,0,0,0.75);
+			border-radius: 11px 11px 11px 11px;
+			overflow-y: scroll;
+			height: 500px;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="app"></div>
+	<script src=https://cdn.jsdelivr.net/npm/pretty-print-json@1.0/dist/pretty-print-json.min.js></script>
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+	<script src="https://unpkg.com/gojs/release/go.js"></script>
+	
+	<script src="main.js"></script>
+
+	<script>
+		let data = {
+			"nombre": "G1",
+			"tipo": "unidireccional",
+			"nodos": [
+				{
+					"id": 1,
+					"dato": 15
+				},
+				{
+					"id": 2,
+					"dato": 30
+				}
+			],
+			"aristas": [
+				{
+					"id": 1,
+					"peso": 100
+				}
+			],
+			"adyacencias": [
+				{
+					"inicio": 1,
+					"destino": 2,
+					"arista": 1
+				}
+			]
+		}
+		//request("GET",'http://localhost:7000/api/grafos',data);
+		request("POST",'http://localhost:7000/restApi/grafo',data);
+	</script>
+</body>
+
+</html>
