@@ -11,9 +11,7 @@ var myDiagram = $(go.Diagram,
 	"myDiagramDiv",
 	{
 		initialAutoScale: go.Diagram.Uniform,
-		layout: $(go.CircularLayout,
-			{ radius: 100 },
-		)
+		layout: $(go.LayeredDigraphLayout)
 	});
 
 // Parametrización de los nodos
