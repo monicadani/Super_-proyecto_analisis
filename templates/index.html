@@ -26,6 +26,9 @@
         .dropdown-hover>.dropdown-menu.dropend {
             margin-left: -1px !important
         }
+		.fixed-top{
+			position: static;
+		}
     </style>
 
 
@@ -209,16 +212,16 @@
 
 
 <body style="background-color: rgb(27, 32, 43);">
-    <div class="mt-2" id="myDiagramDiv" style="width:1350px; height:600px; background-color: #898989;"></div>
+    <div  id="myDiagramDiv" style="width:100%; height:600px; background-color: #898989;"></div>
 <!--     <div class="container">
         <input placeholder="Cantidad de nodos" id="size" type="number">
-        <button class="btn btn-primary" id="boton">Generar grafo aleatorio desde el Servidor</button>
+        
         <button class="btn btn-warning" id="boton2">Cargar Grafo desde la nube</button>
         <button class="btn btn-warning" id="boton3"> Prueba 2</button>
         <button class="btn btn-warning" id="boton4"> Prueba 3</button>
         <button class="btn btn-warning" id="boton5"> Prueba 4</button>
     </div> -->
-
+	<button class="btn btn-primary" id="boton">Generar grafo aleatorio desde el Servidor</button>
     <!--Modal para creacion del grafo personalizado-->
     <div class="modal fade" id="creacionGrafoPModal" tabindex="-1" aria-labelledby="creacionGrafoPModalLabel"
         aria-hidden="true">
@@ -302,7 +305,7 @@
             </div>
         </div>
     </div>
-
+myDiagramDiv
     <!--Modal para edicion de nodo-->
     <div class="modal fade modal-sm-centered" id="edicionNodoModal" tabindex="-1"
         aria-labelledby="edicionNodoModalLabel" aria-hidden="true">

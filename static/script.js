@@ -10,7 +10,7 @@ var $ = go.GraphObject.make;
 var myDiagram = $(go.Diagram,
 	"myDiagramDiv",
 	{
-		initialAutoScale: go.Diagram.Uniform,
+		
 		layout: $(go.LayeredDigraphLayout)
 	});
 
@@ -121,7 +121,7 @@ let getRequest3 = (url) => {
 
 // Eventos a los botones
 document.querySelector("#boton").addEventListener("click", () => {
-	getRequest(`http://localhost:7000/restApi/grafo/random/${document.querySelector("#size").value}`);
+	getRequest(`http://localhost:7000/restApi/grafo/random/15`);
 });
 
 document.querySelector("#boton2").addEventListener("click", () => {
