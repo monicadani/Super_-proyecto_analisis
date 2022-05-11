@@ -1,0 +1,34 @@
+<grafo>
+
+<nodos>
+
+<nodo>
+<id>3</id>
+<nombre>nodo 3</nombre>
+</nodo>
+
+<nodo>
+<id>4</id>
+<nombre>nodo 4</nombre>
+</nodo>
+
+</nodos>
+
+<aristas>
+
+<arista>
+<inicio>1</inicio>
+<fin>2</fin>
+<peso>20</peso>
+</arista>
+
+<arista>
+<inicio>3</inicio>
+<fin>4</fin>
+<peso>30</peso>
+</arista>
+
+</aristas>
+
+
+</grafo>

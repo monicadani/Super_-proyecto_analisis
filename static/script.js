@@ -3,14 +3,12 @@ Saber diferenciar nodos de aristas
 */
 
 
-
-
 // Creación del diagrama asociado a un DIV
 var $ = go.GraphObject.make;
 var myDiagram = $(go.Diagram,
 	"myDiagramDiv",
 	{
-		
+
 		layout: $(go.LayeredDigraphLayout)
 	});
 
@@ -24,7 +22,7 @@ myDiagram.nodeTemplate =
 		),
 		new go.Binding("location", "loc"),
 		$(go.TextBlock,
-			{ margin: 3, font: '20px sans',stroke: 'white' },
+			{ margin: 3, font: '20px sans', stroke: 'white' },
 			new go.Binding("text", "t")
 		)
 	);
@@ -56,12 +54,12 @@ myDiagram.model = new go.GraphLinksModel(
 		{ t: "XOR", key: "4", color: "pink" }
 	],
 	[
-		{ from: "1", to: "2", text: "2",key:'1_2_2'},
-		{ from: "2", to: "1", text: "3" ,key:'2_1_3'},
-		{ from: "1", to: "3", text: "5" ,key:'1_3_5'},
-		{ from: "2", to: "2", text: "10", key:'2_2_10'},
-		{ from: "3", to: "4", text: "20" ,key:'3_4_20'},
-		{ from: "4", to: "1", text: "50", key:'4_1_50'}
+		{ from: "1", to: "2", text: "2", key: '1_2_2' },
+		{ from: "2", to: "1", text: "3", key: '2_1_3' },
+		{ from: "1", to: "3", text: "5", key: '1_3_5' },
+		{ from: "2", to: "2", text: "10", key: '2_2_10' },
+		{ from: "3", to: "4", text: "20", key: '3_4_20' },
+		{ from: "4", to: "1", text: "50", key: '4_1_50' }
 	]);
 
 let modificarGrafo = (palabra) => {
@@ -128,21 +126,20 @@ document.querySelector("#boton2").addEventListener("click", () => {
 	getRequest2('http://localhost:7000/restApi/grafos');
 });
 
-document.querySelector("#boton3").addEventListener("click", () => {
-	console.log('-DATOS-')
-	console.log(myDiagram.selection.toArray())
+/*----------Metodos globales------------- */
 
+function creaGrafo(grafo){
+	let nodos = [];
+	for (let n of grafo.nodos) {
+		nodos.push({ t: n.dato, key: n.id, color: "purple" });
+	}
+	let adyacencias = [];
+	for (let n of grafo.adyacencias) {
+		adyacencias.push({ from: n.inicio, to: n.destino, text: n.arista });
+	}
+	myDiagram.model = new go.GraphLinksModel(nodos, adyacencias);
+}
 
-});
-
-document.querySelector("#boton4").addEventListener("click", () => {
-	alert('boton 4')
-});
-
-document.querySelector("#boton5").addEventListener("click", () => {
-	alert('boton 5')
-
-});
 
 /*----------Nivel 1 Archivo-------*/
 
@@ -241,8 +238,167 @@ let getRequestAleatorio = (url) => {
 
 
 /*Nivel 1-2
-Funcion que se encarga de abrir un documento y procesarlo
+Funcion que se encarga de abrir un documento en XML y procesarlo
 */
+function leerDocumento() {
+	var input = document.createElement('input');
+	input.type = 'file';
+
+
+	input.onchange = e => {
+
+		var file = input.files[0];
+		var fileURL = URL.createObjectURL(file);
+		var req = new XMLHttpRequest();
+		req.open('GET', fileURL);
+		req.onload = function () {
+			URL.revokeObjectURL(fileURL);
+			procesaXML(this.responseXML)
+		};
+		req.onerror = function () {
+			URL.revokeObjectURL(fileURL);
+			console.log('Error loading XML file.');
+		};
+		req.send();
+	}
+	input.click();
+
+}
+
+/*+++++++++++++++++++++++++++++++++++++++++Suceptible a errores, revisar luego++++++++++++++++++++++++++++++++++++++++++ */
+function procesaXML(responseXML) {
+    //Variables
+	let lista_nodos=[];
+	let lista_aristas=[];
+
+	//Lee todos los nodos
+	var nodos = responseXML.getElementsByTagName('grafo')[0].getElementsByTagName('nodo');
+	for (let i = 0; i < nodos.length; i++) {
+		let id=nodos[i].getElementsByTagName('id')[0].innerHTML;
+		let nombre=nodos[i].getElementsByTagName('nombre')[0].innerHTML;
+		lista_nodos.push({ t: nombre, key: id, color: "purple" });
+	}
+
+	//Lee las aristas
+	var aristas = responseXML.getElementsByTagName('grafo')[0].getElementsByTagName('arista');
+	for (let i = 0; i < aristas.length; i++) {
+		let inicio=aristas[i].getElementsByTagName('inicio')[0].innerHTML;
+		let fin=aristas[i].getElementsByTagName('fin')[0].innerHTML;
+		let peso=aristas[i].getElementsByTagName('peso')[0].innerHTML;
+		lista_aristas.push({ from: inicio, to: fin, text: peso});
+	}
+
+	console.log(lista_nodos);
+	console.log(lista_aristas);
+
+}
+
+
+
+
+/* function leerDocumento(fileInput) {
+	var input = document.createElement('input');
+	input.type = 'file';
+
+	input.onchange = e => {
+
+		var file = e.target.files[0];
+		var fileURL = URL.createObjectURL(file);
+		var req = new XMLHttpRequest();
+		req.open('GET', fileURL);
+		req.onload = function() {
+		  URL.revokeObjectURL(fileURL);
+		  populateData(this.responseXML);
+		};
+		req.onerror = function() {
+		  URL.revokeObjectURL(fileURL);
+		  console.log('Error loading XML file.');
+		};
+		req.send();
+
+	}
+	input.click();
+
+
+  }
+  
+  function populateData(xmlDoc) {
+	var root = xmlDoc.documentElement;
+	for(r in root.getElementsById('bookid')){
+		console.log('--text--')
+		console.log(r);
+	    
+	}
+
+    
+  }
+ */
+
+
+
+/* function leerDocumento() {
+	var input = document.createElement('input');
+	input.type = 'file';
+
+	input.onchange = e => {
+		/* 		var file = e.target.files[0]; 
+				var parser = new DOMParser();
+				var xmlDoc = parser.parseFromString(file, "text/xml");
+				var first = xmlDoc.getElementsByTagName("booktitle");
+				console.log(xmlDoc) */
+
+/* 		// getting a hold of the file reference
+		var file = e.target.files[0];
+
+		// setting up the reader
+		var reader = new FileReader();
+		reader.readAsText(file, 'UTF-8');
+
+		// here we tell the reader what to do when it's done reading...
+		reader.onload = readerEvent => {
+			var content = readerEvent.target.result; // this is the content!
+
+			var parser = new DOMParser();
+			var xmlDoc = parser.parseFromString(content, "text/xml");
+			var first = xmlDoc.getElementsByTagName("cookbook");
+			console.log(first)
+		}
+
+
+	}
+ */
+
+
+/*     input.onchange = e => { 
+	
+		// getting a hold of the file reference
+		var file = e.target.files[0]; 
+	
+		readXml(file);
+	 
+		// setting up the reader
+		var reader = new FileReader();
+		reader.readAsText(file,'UTF-8');
+	 
+		// here we tell the reader what to do when it's done reading...
+		reader.onload = readerEvent => {
+		   var content = readerEvent.target.result; // this is the content!
+		   console.log( content );
+		}
+	
+	
+		var parser = new DOMParser();
+		xmlDoc = parser.pars
+	
+	 
+	 } */
+
+
+/* 	input.click();
+}
+ */
+
+
 
 /*Nivel 1-3
 Permite cerrar el espacio del grafo
@@ -330,7 +486,7 @@ function edita_nodo() {
 	/*Se revisa que el array tenga una sola posicion y sea un nodo */
 	if (array_nodos.length === 1) {
 		/*El array de nodo devuelve toda la informacion de cada nodo seleccionado, para nuestro uso solo se usara
-        la kb que da la key y el nombre */
+		la kb que da la key y el nombre */
 		let key = array_nodos[0]['kb']['key']
 
 
@@ -355,24 +511,24 @@ Permite eliminar un nodo
 */
 
 function eliminar_nodo() {
-	let array_nodos =[];
+	let array_nodos = [];
 
 
-	
+
 	/*El array de aristas devuelve todas las aristas seleccionadas*/
 
-	myDiagram.selection.each(function(part) {
+	myDiagram.selection.each(function (part) {
 		console.log(part)
 		console.log(go.Node)
 		if (part instanceof go.Node) {
 			if (part !== null) {
 				array_nodos.unshift(part)
 			}
-			
+
 		}
 	})
 	console.log(array_nodos);
-	
+
 	/*Se borran las aristas */
 	array_nodos.forEach(element => {
 		myDiagram.startTransaction();
@@ -380,7 +536,7 @@ function eliminar_nodo() {
 		myDiagram.commitTransaction("deleted node");
 
 	});
-	
+
 
 
 }
@@ -425,16 +581,16 @@ function crea_arco() {
 	/*Se revisa que el array tenga dos nodos para ser conectados */
 	if (array_nodos.length === 2) {
 		/*El array de nodo devuelve toda la informacion de cada nodo seleccionado, para nuestro uso solo se usara
-        la kb que da la key y el nombre */
+		la kb que da la key y el nombre */
 		let inicio = array_nodos[0]['kb']['key']
 		let fin = array_nodos[1]['kb']['key']
-		let key_a=''
+		let key_a = ''
 
 		/*Se concatenan los tres datos para formar la llave */
-		key_a=key_a.concat(inicio,'_',fin,'_',peso_arco) 
+		key_a = key_a.concat(inicio, '_', fin, '_', peso_arco)
 
 
-		myDiagram.model.addLinkData({ from: inicio, to: fin, text:peso_arco,key:key_a});
+		myDiagram.model.addLinkData({ from: inicio, to: fin, text: peso_arco, key: key_a });
 	}
 
 	else {
@@ -457,20 +613,20 @@ Permite editar un arco
 Permite eliminar un arco
 */
 function eliminar_arista() {
-	let array_aristas =[];
-	
+	let array_aristas = [];
+
 
 	/*El array de aristas devuelve todas las aristas seleccionadas*/
 
-	myDiagram.selection.each(function(part) {
+	myDiagram.selection.each(function (part) {
 		if (part instanceof go.Link) {
 			if (part !== null) {
 				array_aristas.unshift(part)
 			}
-			
+
 		}
 	})
-	
+
 	/*Se borran las aristas */
 	array_aristas.forEach(element => {
 		myDiagram.startTransaction();
@@ -478,7 +634,7 @@ function eliminar_arista() {
 		myDiagram.commitTransaction("deleted node");
 
 	});
-	
+
 
 
 }
@@ -542,21 +698,3 @@ Muestra ayuda
 /*Nivel 5-2
 Muestra informacion sobre la aplicacion
 */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
