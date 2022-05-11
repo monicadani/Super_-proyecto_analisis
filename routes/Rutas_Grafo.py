@@ -11,17 +11,35 @@ class Rutas_Grafo:
 
 		@rutas_grafo.route('/restApi/grafo/random/<int:size>', methods=['GET'])
 		def grafo_aleatorio(size):
+			# Se crea el grafo
 			new_grafo = Grafo({
 				"nombre": "Grafo random",
 				"tipo": "Aleatorio",
 			})
-			num_nodos = size
-			for i in range(1,num_nodos):
+
+			# Se crean los nodos de forma aleatoria
+			num_nodos = size +1
+			for i in range(1, num_nodos):
 				new_grafo.get_nodos().append({
-					"id":i,
-					"dato":random.choice(["AND","OR","NOT","XOR","NAND","NOR","XNOR"])
+					"id": i,
+					"dato": random.choice(["AND", "OR", "NOT", "XOR", "NAND", "NOR", "XNOR"])
 				})
-			num_aristas = random.randint(num_nodos,num_nodos*2)
+
+			# Se crean las aristas de forma aleatoria
+			num_aristas = random.randint(num_nodos, num_nodos * 2)
+
+			for i in range(num_aristas):
+				inicio = random.choice(new_grafo.get_nodos())
+				fin = random.choice([v for v in new_grafo.get_nodos() if v != inicio])
+				peso = random.randint(1, 50)
+
+				new_grafo.get_aristas().append({'inicio': inicio["id"], 'fin': fin["id"], 'peso': peso})
+
+			return new_grafo.get_json()
+
+
+
+			""" 			num_aristas = random.randint(num_nodos,num_nodos*2)
 			for i in range(num_aristas):
 				new_grafo.get_aristas().append({"id":i,"peso":i})
 			num_nodo = 1
@@ -33,8 +51,7 @@ class Rutas_Grafo:
 					"destino":random.choice(new_grafo.get_nodos())["id"],
 					"arista":i
 				})
-				num_nodo += 1
-			return new_grafo.get_json()
+				num_nodo += 1 """
 
 		@rutas_grafo.route('/')
 		def index():

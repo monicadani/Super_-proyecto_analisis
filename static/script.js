@@ -128,14 +128,16 @@ document.querySelector("#boton2").addEventListener("click", () => {
 
 /*----------Metodos globales------------- */
 
+
+
 function creaGrafo(grafo){
 	let nodos = [];
 	for (let n of grafo.nodos) {
-		nodos.push({ t: n.dato, key: n.id, color: "purple" });
+		nodos.push(n);
 	}
 	let adyacencias = [];
 	for (let n of grafo.adyacencias) {
-		adyacencias.push({ from: n.inicio, to: n.destino, text: n.arista });
+		adyacencias.push(n);
 	}
 	myDiagram.model = new go.GraphLinksModel(nodos, adyacencias);
 }
@@ -191,10 +193,6 @@ function reinizializa_grafo() {
 /*Nivel 1-1-2
 Funcion que se encarga de crear un grafo aleatorio
 */
-document.querySelector("#boton_crear_alea").addEventListener("click", () => {
-	nuevo_grafo_aleatorio();
-});
-
 function nuevo_grafo_aleatorio() {
 	let nombre_grafo = document.querySelector('#nombre_grafo_alea').value;
 	let numero_nodos = document.querySelector('#numero_nodos_alea').value;
@@ -288,9 +286,11 @@ function procesaXML(responseXML) {
 		lista_aristas.push({ from: inicio, to: fin, text: peso});
 	}
 
-	console.log(lista_nodos);
-	console.log(lista_aristas);
+	let grafo={};
+	grafo.nodos=lista_nodos;
+	grafo.adyacencias=lista_aristas;
 
+	creaGrafo(grafo);
 }
 
 
