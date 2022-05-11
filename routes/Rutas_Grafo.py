@@ -28,18 +28,19 @@ class Rutas_Grafo:
 			# Se crean las aristas de forma aleatoria
 			num_aristas = random.randint(num_nodos, num_nodos * 2)
 
+			num_nodo = 1
 			for i in range(num_aristas):
-				inicio = random.choice(new_grafo.get_nodos())
-				fin = random.choice([v for v in new_grafo.get_nodos() if v != inicio])
-				peso = random.randint(1, 50)
+				if(i > num_nodos):
+					num_nodo = 1
+				new_grafo.get_aristas().append({'inicio': num_nodo, 'fin': random.choice(new_grafo.get_nodos())["id"], 'peso': i})
+				num_nodo += 1
 
-				new_grafo.get_aristas().append({'inicio': inicio["id"], 'fin': fin["id"], 'peso': peso})
 
 			return new_grafo.get_json()
 
 
 
-			""" 			num_aristas = random.randint(num_nodos,num_nodos*2)
+			"""num_aristas = random.randint(num_nodos,num_nodos*2)
 			for i in range(num_aristas):
 				new_grafo.get_aristas().append({"id":i,"peso":i})
 			num_nodo = 1

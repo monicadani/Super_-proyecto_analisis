@@ -54,34 +54,18 @@ myDiagram.model = new go.GraphLinksModel(
 		{ t: "XOR", key: "4", color: "pink" }
 	],
 	[
-		{ from: "1", to: "2", text: "2", key: '1_2_2' },
-		{ from: "2", to: "1", text: "3", key: '2_1_3' },
-		{ from: "1", to: "3", text: "5", key: '1_3_5' },
-		{ from: "2", to: "2", text: "10", key: '2_2_10' },
-		{ from: "3", to: "4", text: "20", key: '3_4_20' },
-		{ from: "4", to: "1", text: "50", key: '4_1_50' }
+		{ from: "1", to: "2", text: "2" },
+		{ from: "2", to: "1", text: "3" },
+		{ from: "1", to: "3", text: "5" },
+		{ from: "2", to: "2", text: "10" },
+		{ from: "3", to: "4", text: "20" },
+		{ from: "4", to: "1", text: "50" }
 	]);
 
-let modificarGrafo = (palabra) => {
-	console.log('-funciona-')
+//Variables
+var nombre='Nombre grafo'
+var tipo='Ejemplo'
 
-	myDiagram.model.addNodeData({ t: palabra, key: "4", color: "purple" });
-	myDiagram.model.layout.Diagram(true);
-
-}
-
-// Agregación de modelo según un JSON
-let setModel = (grafo) => {
-	let nodos = [];
-	for (let n of grafo.nodos) {
-		nodos.push({ t: n.dato, key: n.id, color: "purple" });
-	}
-	let adyacencias = [];
-	for (let n of grafo.adyacencias) {
-		adyacencias.push({ from: n.inicio, to: n.destino, text: n.arista });
-	}
-	myDiagram.model = new go.GraphLinksModel(nodos, adyacencias);
-}
 
 // Peticiones al servidor con el uso de Axios
 let getRequest = (url) => {
@@ -94,53 +78,108 @@ let getRequest = (url) => {
 	});
 }
 
-let getRequest2 = (url) => {
-	axios.get(url).then(response => {
-		console.log('--grafos--')
-		let grafo = response.data;
-		console.log(grafo['data']);
-		setModel(grafo.data[0].object[0]);
-	}).catch(error => {
-		console.log(error);
-	});
-}
-
-let getRequest3 = (url) => {
-	axios.get(url).then(response => {
-
-		let grafo = response.data;
-		console.log(grafo['data']);
-		setModel(grafo.data[0].object[0]);
-	}).catch(error => {
-		console.log(error);
-	});
-}
 
 
-// Eventos a los botones
-document.querySelector("#boton").addEventListener("click", () => {
-	getRequest(`http://localhost:7000/restApi/grafo/random/15`);
-});
 
-document.querySelector("#boton2").addEventListener("click", () => {
-	getRequest2('http://localhost:7000/restApi/grafos');
-});
 
 /*----------Metodos globales------------- */
 
+function crea_grafo(grafo) {
 
-
-function creaGrafo(grafo){
+	/* Se crea la lista de nodos */
 	let nodos = [];
 	for (let n of grafo.nodos) {
-		nodos.push(n);
+		nodos.push({ t: n.dato, key: n.id, color: color_dato(n.dato) });
 	}
-	let adyacencias = [];
-	for (let n of grafo.adyacencias) {
-		adyacencias.push(n);
+
+	/* Se crea la lista de adyacencias */
+	let aristas = [];
+	for (let n of grafo.aristas) {
+		aristas.push({ from: n.inicio, to: n.fin, text: n.peso });
 	}
-	myDiagram.model = new go.GraphLinksModel(nodos, adyacencias);
+
+	/* Se crea el grafo */
+	myDiagram.model = new go.GraphLinksModel(nodos, aristas);
 }
+
+function color_dato(dato) {
+
+	switch (dato) {
+		case "AND":
+			return ("purple");
+		case "OR":
+			return ("orange");
+		case "NOT":
+			return ("lightgreen");
+		case "XOR":
+			return ("blue");
+		case "NAND":
+			return ("pink");
+		case "NOR":
+			return ("purple");
+		case "XNOR":
+			return ("orange");
+		default:
+			return ("black");;
+	}
+
+
+
+}
+
+/*Genera un JSON del grafo actual*/
+function obtiene_grafo_actual() {
+	let lista_nodos = [];
+	let lista_aristas = [];
+
+
+	myDiagram.nodes.each(function (data) {
+		let id = data.key;
+		let nombre = data['kb']['t'];
+		lista_nodos.push({ 'dato': nombre, 'id': id });
+	});
+
+	myDiagram.links.each(function (data) {
+		let inicio = data['kb']['from'];
+		let fin = data['kb']['to'];
+		let peso = data['kb']['text'];
+		lista_aristas.push({ 'inicio': inicio, 'fin': fin, 'peso': peso });
+	})
+
+	let grafo={"nodos":lista_nodos,"aristas":lista_aristas}
+
+	return grafo;
+}
+
+/*------------Peticiones al servidor con el uso de Axios------------*/
+const options = {
+	headers: {
+		'X-Master-Key': '$2b$10$LhCbDpA5gOD3zUpsiCMNLOqpMALprhx4suc18LQUwiYgxYQPmJcgS',
+		'Content-Type': 'application/json'
+	}
+};
+
+
+let getRequestAleatorio = (url) => {
+	axios.get(url).then(response => {
+		let grafo = response.data;
+		crea_grafo(grafo);
+	}).catch(error => {
+		console.log(error);
+	});
+}
+
+let postRequest=(url,data)=>{
+	axios.post(url,data,options).then(response => {
+		console.log('Se subio correctamente la info');
+		console.log(data);
+	}).catch(error => {
+		console.log(error);
+	});
+}
+
+
+
 
 
 /*----------Nivel 1 Archivo-------*/
@@ -149,10 +188,6 @@ function creaGrafo(grafo){
 /*Nivel 1-1-1 
 Funcion que se encarga de crear un nuevo grafo
 */
-document.querySelector("#boton_crear_pers").addEventListener("click", () => {
-	nuevo_grafo();
-});
-
 function nuevo_grafo() {
 
 	console.log("prueba")
@@ -170,7 +205,7 @@ function nuevo_grafo() {
 
 	if (error == false) {
 
-		reinizializa_grafo();
+		crea_grafo({ nodos: [], adyacencias: [] });
 	}
 
 	else {
@@ -179,14 +214,6 @@ function nuevo_grafo() {
 }
 
 
-function reinizializa_grafo() {
-	myDiagram.model = new go.GraphLinksModel(
-		[
-		],
-		[
-		]);
-
-}
 
 
 
@@ -212,7 +239,7 @@ function nuevo_grafo_aleatorio() {
 
 
 	if (error == false) {
-		getRequest(`http://localhost:7000/restApi/grafo/random/` + numero_nodos);
+		getRequestAleatorio(`http://localhost:7000/restApi/grafo/random/` + numero_nodos);
 
 	}
 
@@ -223,15 +250,7 @@ function nuevo_grafo_aleatorio() {
 
 
 
-let getRequestAleatorio = (url) => {
-	axios.get(url).then(response => {
-		let grafo = response.data;
-		console.log(grafo);
-		setModel(grafo);
-	}).catch(error => {
-		console.log(error);
-	});
-}
+
 
 
 
@@ -265,138 +284,33 @@ function leerDocumento() {
 
 /*+++++++++++++++++++++++++++++++++++++++++Suceptible a errores, revisar luego++++++++++++++++++++++++++++++++++++++++++ */
 function procesaXML(responseXML) {
-    //Variables
-	let lista_nodos=[];
-	let lista_aristas=[];
+	//Variables
+	let lista_nodos = [];
+	let lista_aristas = [];
 
 	//Lee todos los nodos
 	var nodos = responseXML.getElementsByTagName('grafo')[0].getElementsByTagName('nodo');
 	for (let i = 0; i < nodos.length; i++) {
-		let id=nodos[i].getElementsByTagName('id')[0].innerHTML;
-		let nombre=nodos[i].getElementsByTagName('nombre')[0].innerHTML;
-		lista_nodos.push({ t: nombre, key: id, color: "purple" });
+		let id = nodos[i].getElementsByTagName('id')[0].innerHTML;
+		let nombre = nodos[i].getElementsByTagName('nombre')[0].innerHTML;
+		lista_nodos.push({ 'dato': nombre, 'id': id });
 	}
 
 	//Lee las aristas
 	var aristas = responseXML.getElementsByTagName('grafo')[0].getElementsByTagName('arista');
 	for (let i = 0; i < aristas.length; i++) {
-		let inicio=aristas[i].getElementsByTagName('inicio')[0].innerHTML;
-		let fin=aristas[i].getElementsByTagName('fin')[0].innerHTML;
-		let peso=aristas[i].getElementsByTagName('peso')[0].innerHTML;
-		lista_aristas.push({ from: inicio, to: fin, text: peso});
+		let inicio = aristas[i].getElementsByTagName('inicio')[0].innerHTML;
+		let fin = aristas[i].getElementsByTagName('fin')[0].innerHTML;
+		let peso = aristas[i].getElementsByTagName('peso')[0].innerHTML;
+		lista_aristas.push({ 'inicio': inicio, 'fin': fin, 'peso': peso });
 	}
 
-	let grafo={};
-	grafo.nodos=lista_nodos;
-	grafo.adyacencias=lista_aristas;
+	let grafo = {};
+	grafo.nodos = lista_nodos;
+	grafo.aristas = lista_aristas;
 
-	creaGrafo(grafo);
+	crea_grafo(grafo);
 }
-
-
-
-
-/* function leerDocumento(fileInput) {
-	var input = document.createElement('input');
-	input.type = 'file';
-
-	input.onchange = e => {
-
-		var file = e.target.files[0];
-		var fileURL = URL.createObjectURL(file);
-		var req = new XMLHttpRequest();
-		req.open('GET', fileURL);
-		req.onload = function() {
-		  URL.revokeObjectURL(fileURL);
-		  populateData(this.responseXML);
-		};
-		req.onerror = function() {
-		  URL.revokeObjectURL(fileURL);
-		  console.log('Error loading XML file.');
-		};
-		req.send();
-
-	}
-	input.click();
-
-
-  }
-  
-  function populateData(xmlDoc) {
-	var root = xmlDoc.documentElement;
-	for(r in root.getElementsById('bookid')){
-		console.log('--text--')
-		console.log(r);
-	    
-	}
-
-    
-  }
- */
-
-
-
-/* function leerDocumento() {
-	var input = document.createElement('input');
-	input.type = 'file';
-
-	input.onchange = e => {
-		/* 		var file = e.target.files[0]; 
-				var parser = new DOMParser();
-				var xmlDoc = parser.parseFromString(file, "text/xml");
-				var first = xmlDoc.getElementsByTagName("booktitle");
-				console.log(xmlDoc) */
-
-/* 		// getting a hold of the file reference
-		var file = e.target.files[0];
-
-		// setting up the reader
-		var reader = new FileReader();
-		reader.readAsText(file, 'UTF-8');
-
-		// here we tell the reader what to do when it's done reading...
-		reader.onload = readerEvent => {
-			var content = readerEvent.target.result; // this is the content!
-
-			var parser = new DOMParser();
-			var xmlDoc = parser.parseFromString(content, "text/xml");
-			var first = xmlDoc.getElementsByTagName("cookbook");
-			console.log(first)
-		}
-
-
-	}
- */
-
-
-/*     input.onchange = e => { 
-	
-		// getting a hold of the file reference
-		var file = e.target.files[0]; 
-	
-		readXml(file);
-	 
-		// setting up the reader
-		var reader = new FileReader();
-		reader.readAsText(file,'UTF-8');
-	 
-		// here we tell the reader what to do when it's done reading...
-		reader.onload = readerEvent => {
-		   var content = readerEvent.target.result; // this is the content!
-		   console.log( content );
-		}
-	
-	
-		var parser = new DOMParser();
-		xmlDoc = parser.pars
-	
-	 
-	 } */
-
-
-/* 	input.click();
-}
- */
 
 
 
@@ -404,12 +318,25 @@ function procesaXML(responseXML) {
 Permite cerrar el espacio del grafo
 */
 
+/* ????? */
+
 /*Nivel 1-4
-Permite guardar el grafo en la base de datos
+Permite guardar el grafo en la base de datos*/
+
+function guarda_grafo(){
+grafo=obtiene_grafo_actual();
+grafo.nombre=this.nombre;
+grafo.tipo=this.tipo;
+postRequest(`http://localhost:7000/restApi/grafo`,grafo)
+
+}
+
 
 /*Nivel 1-5
 Permite guardar el grafo como un JSON
 */
+
+
 
 /*Nivel 1-6-1
 Permite exportar los datos en un excel
@@ -698,3 +625,10 @@ Muestra ayuda
 /*Nivel 5-2
 Muestra informacion sobre la aplicacion
 */
+
+
+
+// Eventos para testear
+document.querySelector("#boton").addEventListener("click", () => {
+	getRequest(`http://localhost:7000/restApi/grafo/random/15`);
+});
