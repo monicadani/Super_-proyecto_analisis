@@ -63,8 +63,8 @@ myDiagram.model = new go.GraphLinksModel(
 	]);
 
 //Variables
-var nombre='Nombre grafo'
-var tipo='Ejemplo'
+var nombre = 'Nombre grafo'
+var tipo = 'Ejemplo'
 
 
 // Peticiones al servidor con el uso de Axios
@@ -146,10 +146,12 @@ function obtiene_grafo_actual() {
 		lista_aristas.push({ 'inicio': inicio, 'fin': fin, 'peso': peso });
 	})
 
-	let grafo={"nodos":lista_nodos,"aristas":lista_aristas}
+	let grafo = { "nodos": lista_nodos, "aristas": lista_aristas }
 
 	return grafo;
 }
+
+
 
 /*------------Peticiones al servidor con el uso de Axios------------*/
 const options = {
@@ -169,8 +171,8 @@ let getRequestAleatorio = (url) => {
 	});
 }
 
-let postRequest=(url,data)=>{
-	axios.post(url,data,options).then(response => {
+let postRequest = (url, data) => {
+	axios.post(url, data, options).then(response => {
 		console.log('Se subio correctamente la info');
 		console.log(data);
 	}).catch(error => {
@@ -323,11 +325,11 @@ Permite cerrar el espacio del grafo
 /*Nivel 1-4
 Permite guardar el grafo en la base de datos*/
 
-function guarda_grafo(){
-grafo=obtiene_grafo_actual();
-grafo.nombre=this.nombre;
-grafo.tipo=this.tipo;
-postRequest(`http://localhost:7000/restApi/grafo`,grafo)
+function guarda_grafo() {
+	grafo = obtiene_grafo_actual();
+	grafo.nombre = this.nombre;
+	grafo.tipo = this.tipo;
+	postRequest(`http://localhost:7000/restApi/grafo`, grafo)
 
 }
 
@@ -569,21 +571,10 @@ function eliminar_arista() {
 
 /*----------Nivel 3-------*/
 
-/*Nivel 3-1
-Algoritmo
-*/
-
-/*Nivel 3-1-1
-Algoritmo 1
-*/
-
-/*Nivel 3-1-2
-Algoritmo 2
-*/
-
-/*Nivel 3-1-2n
-Algoritmo 3
-*/
+/* -Agregar algoritmos en proxima entrega
+-Algoritmo 1
+-Algoritmo 2
+-Algoritmo 3 */
 
 /*----------Nivel 4-------*/
 
@@ -594,23 +585,141 @@ Permite la ejecucion de la aplicacion del menu de aplicaciones
 
 /*----------Nivel 5 aplicaciones-------*/
 
-/*Nivel 5-1
-Aplicacion 1
-*/
+/* -Agregar aplicaciones en la proxima entrega
+-Aplicacion 1
+-Aplicacion 2
+-Aplicacion 3 */
 
-/*Nivel 5-2
-Aplicacion 2
-*/
-
-/*Nivel 5-3
-Aplicacion m
-*/
 
 /*----------Nivel 6 ventana-------*/
 
 /*Nivel 5-1
 Permite ver el modo grafico
 */
+function modo_grafo() {
+	/* deshabilita el modo tabla y activa el modo grafico */
+	var x = document.getElementById("grafica_grafo");
+	var y = document.getElementById("tabla_grafo");
+
+	x.style.display = "block"
+	y.style.display = "none"
+
+}
+
+function modo_tabla() {
+	/* deshabilita el modo grafico y activa el modo tabla */
+	var x = document.getElementById("grafica_grafo");
+	var y = document.getElementById("tabla_grafo");
+
+	x.style.display = "none"
+	y.style.display = "block"
+	y.innerHTML = "";
+
+
+	/* 	crea un nuevo atributo de tabla */
+	tbl = document.createElement('table');
+	tbl.className = "table table-striped table-dark";
+
+	/*procesa el grafo en una tabla */
+	var grafo_actual = obtiene_grafo_actual();
+
+	let matriz = [];
+	for (let i = 0; i < grafo_actual.nodos.length; i++) {
+		let vector_tmp = []
+		for (let j = 0; j < grafo_actual.nodos.length; j++) {
+			let dato_tmp = grafo_actual.nodos[i].dato
+			let id_tmp = grafo_actual.nodos[i].id
+			vector_tmp.unshift('x')
+
+		}
+		matriz.unshift(vector_tmp)
+
+	}
+	console.log(grafo_actual);
+
+
+	/*Se buscan los caminos */
+	for (let i = 0; i < grafo_actual.aristas.length; i++) {
+		fil = grafo_actual.aristas[i].inicio;
+		fil_index = grafo_actual.nodos.map(function (e) { return e.id; }).indexOf(fil);
+
+		col = grafo_actual.aristas[i].fin;
+		col_index = grafo_actual.nodos.map(function (e) { return e.id; }).indexOf(col);
+
+		peso = grafo_actual.aristas[i].peso;
+
+		matriz[fil_index][col_index] = peso;
+	}
+
+	/*Se organizan los datos*/
+	for (let i = 0; i < matriz.length; i++) {
+		nombre=grafo_actual.nodos[i].dato;
+		id=grafo_actual.nodos[i].id;
+		
+		matriz[i].unshift(nombre+'('+id+')');
+	}
+
+
+	let vector_tmp=['X']
+	for (let i = 0; i < grafo_actual.nodos.length; i++) {
+		nombre=grafo_actual.nodos[i].dato;
+		id=grafo_actual.nodos[i].id;
+
+		vector_tmp.push(nombre+'('+id+')');
+	}
+	matriz.unshift(vector_tmp);
+	
+
+
+
+	/*Se agrega la tabla */
+	for (let i = 0; i < matriz.length; i++) {
+		const tr = tbl.insertRow();
+		for (let j = 0; j < matriz[i].length; j++) {
+			const td = tr.insertCell();
+			td.appendChild(document.createTextNode(matriz[i][j]));
+			td.style.border = '1px solid black';
+
+		}
+	}
+
+
+
+
+
+
+
+
+	y.appendChild(tbl);
+
+
+
+}
+
+
+
+
+
+/* 	for (let i = 0; i < 3; i++) {
+		const tr = tbl.insertRow();
+		for (let j = 0; j < 2; j++) {
+			if (i === 2 && j === 1) {
+				break;
+			} else {
+				const td = tr.insertCell();
+				td.appendChild(document.createTextNode(`Cell I${i}/J${j}`));
+				td.style.border = '1px solid black';
+				if (i === 1 && j === 1) {
+					td.setAttribute('rowSpan', '2');
+				}
+			}
+		}
+	} */
+
+
+
+
+
 
 /*Nivel 5-2
 Permite ver el modo tabla
@@ -621,14 +730,27 @@ Permite ver el modo tabla
 /*Nivel 5-1
 Muestra ayuda
 */
+function muestra_ayuda() {
+	alert('Aqui esta el documento de ayuda')
+}
+
 
 /*Nivel 5-2
 Muestra informacion sobre la aplicacion
 */
-
+function muestra_informacion_app() {
+	alert('Muestra un modal')
+}
 
 
 // Eventos para testear
-document.querySelector("#boton").addEventListener("click", () => {
+/* document.querySelector("#boton").addEventListener("click", () => {
 	getRequest(`http://localhost:7000/restApi/grafo/random/15`);
 });
+ */
+
+
+document.querySelector("#boton123").addEventListener("click", () => {
+	funcion_prueba();
+});
+

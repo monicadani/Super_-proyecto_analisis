@@ -26,9 +26,10 @@
         .dropdown-hover>.dropdown-menu.dropend {
             margin-left: -1px !important
         }
-		.fixed-top{
-			position: static;
-		}
+
+        .fixed-top {
+            position: static;
+        }
     </style>
 
 
@@ -60,7 +61,7 @@
                                 href="#">Aleatorio</a>
                         </div>
                     </div>
-                    
+
                     <a class="dropdown-item" href="javascript:leerDocumento()">Abrir</a>
                     <a class="dropdown-item" href="#">Cerrar</a>
                     <div class="dropdown-divider"></div>
@@ -115,9 +116,9 @@
                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Arco</a>
                         <div class="dropdown-menu" aria-labelledby="dropdown-layouts">
                             <a class="dropdown-item" href="#" data-bs-toggle="modal"
-                            data-bs-target="#creacionAristaModal">Agregar</a>
+                                data-bs-target="#creacionAristaModal">Agregar</a>
                             <a class="dropdown-item" href="#" data-bs-toggle="modal"
-                            data-bs-target="#creacionAristaModal">Editar</a>
+                                data-bs-target="#creacionAristaModal">Editar</a>
                             <a class="dropdown-item" href="javascript:eliminar_arista()">Eliminar</a>
                         </div>
                     </div>
@@ -182,8 +183,8 @@
 
 
                     <!--Opciones-->
-                    <a class="dropdown-item" href="#">Grafica</a>
-                    <a class="dropdown-item" href="#">Tabla</a>
+                    <a class="dropdown-item" href="javascript:modo_grafo()">Grafica</a>
+                    <a class="dropdown-item" href="javascript:modo_tabla()">Tabla</a>
 
                 </div>
             </li>
@@ -196,7 +197,8 @@
 
                     <!--Opciones-->
                     <a class="dropdown-item" href="#">Ayuda</a>
-                    <a class="dropdown-item" href="#">Acerca de grafos</a>
+                    <a class="dropdown-item" href="#" data-bs-toggle="modal"
+                    data-bs-target="#acercaGrafosModal">Acerca de grafos</a>
 
                 </div>
             </li>
@@ -212,16 +214,25 @@
 
 
 <body style="background-color: rgb(27, 32, 43);">
-    <div  id="myDiagramDiv" style="width:100%; height:600px; background-color: #898989;"></div>
-<!--     <div class="container">
-        <input placeholder="Cantidad de nodos" id="size" type="number">
-        
-        <button class="btn btn-warning" id="boton2">Cargar Grafo desde la nube</button>
-        <button class="btn btn-warning" id="boton3"> Prueba 2</button>
-        <button class="btn btn-warning" id="boton4"> Prueba 3</button>
-        <button class="btn btn-warning" id="boton5"> Prueba 4</button>
-    </div> -->
-	<button class="btn btn-primary" id="boton">Generar grafo aleatorio desde el Servidor</button>
+
+
+    <!--Grafo del sistema-->
+    <div id="grafica_grafo">
+        <div id="myDiagramDiv" style="width:100%; height:600px; background-color: #898989;"></div>
+    </div>
+
+    <!--Tabla del sistema-->
+
+    <div id="tabla_grafo"    style="display:none;"          >
+
+    </div>
+
+
+    <button id="boton123">Clickeame</button>
+
+
+
+
     <!--Modal para creacion del grafo personalizado-->
     <div class="modal fade" id="creacionGrafoPModal" tabindex="-1" aria-labelledby="creacionGrafoPModalLabel"
         aria-hidden="true">
@@ -240,8 +251,8 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="boton_crear_pers"
-                        data-bs-dismiss="modal" onCLick="nuevo_grafo()">Crear!</button>
+                    <button type="button" class="btn btn-primary" id="boton_crear_pers" data-bs-dismiss="modal"
+                        onCLick="nuevo_grafo()">Crear!</button>
                 </div>
             </div>
         </div>
@@ -270,8 +281,8 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="boton_crear_alea"
-                        data-bs-dismiss="modal" onCLick="nuevo_grafo_aleatorio()">Crear!</button>
+                    <button type="button" class="btn btn-primary" id="boton_crear_alea" data-bs-dismiss="modal"
+                        onCLick="nuevo_grafo_aleatorio()">Crear!</button>
                 </div>
             </div>
         </div>
@@ -299,13 +310,13 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="boton_crear_nodo"
-                        data-bs-dismiss="modal" onCLick="crea_nuevo_nodo()">Crear</button>
+                    <button type="button" class="btn btn-primary" id="boton_crear_nodo" data-bs-dismiss="modal"
+                        onCLick="crea_nuevo_nodo()">Crear</button>
                 </div>
             </div>
         </div>
     </div>
-myDiagramDiv
+    myDiagramDiv
     <!--Modal para edicion de nodo-->
     <div class="modal fade modal-sm-centered" id="edicionNodoModal" tabindex="-1"
         aria-labelledby="edicionNodoModalLabel" aria-hidden="true">
@@ -324,8 +335,8 @@ myDiagramDiv
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="boton_editar_nodo"
-                        data-bs-dismiss="modal" onCLick="edita_nodo()">Editar</button>
+                    <button type="button" class="btn btn-primary" id="boton_editar_nodo" data-bs-dismiss="modal"
+                        onCLick="edita_nodo()">Editar</button>
                 </div>
             </div>
         </div>
@@ -349,20 +360,34 @@ myDiagramDiv
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="boton_crear_arco"
-                        data-bs-dismiss="modal" onCLick="crea_arco()">Editar</button>
+                    <button type="button" class="btn btn-primary" id="boton_crear_arco" data-bs-dismiss="modal"
+                        onCLick="crea_arco()">Editar</button>
                 </div>
             </div>
         </div>
     </div>
 
 
-
-
-
-
-
-
+        <!--Modal para acerca de grafos-->
+        <div class="modal fade modal-sm-centered" id="acercaGrafosModal" tabindex="-1"
+        aria-labelledby="acercaGrafosModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="creacionAristaModalLabel">Acerca de grafos</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="recipient-name" class="col-form-label">Grafos!</label>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+ 
 
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
