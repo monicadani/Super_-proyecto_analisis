@@ -589,7 +589,7 @@ let algoritmoA = () => {
 
 	}).catch(error => {
 		console.log(error);
-		document.getElementById("txtalgoritmo1").innerHTML = "Error en el algoritmo 1:";
+		document.getElementById("txtalgoritmo1").innerHTML = "Error en el algoritmo 1";
 	});
 }
 
@@ -604,27 +604,64 @@ function txt1(info){
 
 
 /*-Algoritmo 2*/
-function algoritmoB() {
-alert('Algoritmo 2')
-
-}
-
-
-
-
-let algoritmoC = () => {
-	let url="http://localhost:7000/restApi/grafo/a1";
+let algoritmoB = () => {
+	let url="http://localhost:7000/restApi/grafo/a2";
 	let data=obtiene_grafo_actual();
 	data.nombre = this.nombre;
 	data.tipo = this.tipo;
 
+	document.getElementById("txtalgoritmo2").innerHTML = "Algoritmo 2 en proceso...";
+
 	axios.post(url, data, options).then(response => {
-		console.log('algoritmoC corre sin problemas');
-		console.log(data);
+		console.log('algoritmoB corre sin problemas');
+		console.log(response);
+		txt2(response.data);
+
 	}).catch(error => {
 		console.log(error);
+		document.getElementById("txtalgoritmo2").innerHTML = "Error en el algoritmo 2";
 	});
 }
+
+function txt2(info){
+	console.log("----")
+	console.log(info)
+	document.getElementById("txtalgoritmo2").innerHTML = "Algoritmo2:";
+	document.getElementById("txtalgoritmo2T").innerHTML = "Tiempo:"+info.tiempo;
+	document.getElementById("txtalgoritmo2D").innerHTML = "SIA:"+info.sia;
+	document.getElementById("txtalgoritmo2C").innerHTML = "Corte:"+info.cut;
+}
+
+
+/*-Algoritmo 3*/
+let algoritmoC = () => {
+	let url="http://localhost:7000/restApi/grafo/a3";
+	let data=obtiene_grafo_actual();
+	data.nombre = this.nombre;
+	data.tipo = this.tipo;
+
+	document.getElementById("txtalgoritmo3").innerHTML = "Algoritmo 3 en proceso...";
+
+	axios.post(url, data, options).then(response => {
+		console.log('algoritmoC corre sin problemas');
+		console.log(response);
+		txt2(response.data);
+
+	}).catch(error => {
+		console.log(error);
+		document.getElementById("txtalgoritmo3").innerHTML = "Error en el algoritmo 3";
+	});
+}
+
+function txt3(info){
+	console.log("----")
+	console.log(info)
+	document.getElementById("txtalgoritmo3").innerHTML = "Algoritmo3:";
+	document.getElementById("txtalgoritmo3T").innerHTML = "Tiempo:"+info.tiempo;
+	document.getElementById("txtalgoritmo3D").innerHTML = "SIA:"+info.sia;
+	document.getElementById("txtalgoritmo3C").innerHTML = "Corte:"+info.cut;
+}
+
 
 /*----------Nivel 6 ventana-------*/
 

@@ -98,5 +98,21 @@ class Rutas_Grafo:
 			'cut': str(cut),
 			'tiempo':str((end - start))}
 
+		@rutas_grafo.route('/restApi/grafo/a2', methods=['POST'])
+		def algoritmo2() :
+			#Se mide el tiempo
+			start = time.time()
+
+			grafo = Grafo(request.json)
+			grafo.set_json(request.json)
+			algoritmo1= Algoritmo1()
+			sia,cut=algoritmo1.correAlgoritmoAlt(grafo)
+			end = time.time()
+
+			return {
+			'sia': str(sia),
+			'cut': str(cut),
+			'tiempo':str((end - start))}
+
 		return rutas_grafo
 
