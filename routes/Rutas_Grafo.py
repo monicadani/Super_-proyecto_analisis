@@ -1,6 +1,9 @@
 from flask import Blueprint, request, render_template
 from models.Grafo import Grafo
 import random
+from routes.Algoritmo1 import Algoritmo1
+import time
+
 
 class Rutas_Grafo:
 	def __init__(self,repository):
@@ -22,7 +25,7 @@ class Rutas_Grafo:
 			for i in range(1, num_nodos):
 				new_grafo.get_nodos().append({
 					"id": i,
-					"dato": random.choice(["AND", "OR", "NOT", "XOR", "NAND", "NOR", "XNOR"])
+					"dato": random.choice(["AND", "OR", "XOR"],)
 				})
 
 			# Se crean las aristas de forma aleatoria
@@ -78,4 +81,22 @@ class Rutas_Grafo:
 		def eliminar_grafo(id):
 			return self.repo.delete_object(id)
 
+
+		@rutas_grafo.route('/restApi/grafo/a1', methods=['POST'])
+		def algoritmo1() :
+			#Se mide el tiempo
+			start = time.time()
+
+			grafo = Grafo(request.json)
+			grafo.set_json(request.json)
+			algoritmo1= Algoritmo1()
+			sia,cut=algoritmo1.correAlgoritmo(grafo)
+			end = time.time()
+
+			return {
+			'sia': str(sia),
+			'cut': str(cut),
+			'tiempo':str((end - start))}
+
 		return rutas_grafo
+

@@ -572,24 +572,59 @@ function eliminar_arista() {
 /*----------Nivel 3-------*/
 
 /* -Agregar algoritmos en proxima entrega
--Algoritmo 1
--Algoritmo 2
--Algoritmo 3 */
+-Algoritmo 1*/
 
-/*----------Nivel 4-------*/
+let algoritmoA = () => {
+	let url="http://localhost:7000/restApi/grafo/a1";
+	let data=obtiene_grafo_actual();
+	data.nombre = this.nombre;
+	data.tipo = this.tipo;
 
-/*Nivel 4-1
-Permite la ejecucion de la aplicacion del menu de aplicaciones
-*/
+	document.getElementById("txtalgoritmo1").innerHTML = "Algoritmo 1 en proceso...";
+
+	axios.post(url, data, options).then(response => {
+		console.log('algoritmoA corre sin problemas');
+		console.log(response);
+		txt1(response.data);
+
+	}).catch(error => {
+		console.log(error);
+		document.getElementById("txtalgoritmo1").innerHTML = "Error en el algoritmo 1:";
+	});
+}
+
+function txt1(info){
+	console.log("----")
+	console.log(info)
+	document.getElementById("txtalgoritmo1").innerHTML = "Algoritmo1:";
+	document.getElementById("txtalgoritmo1T").innerHTML = "Tiempo:"+info.tiempo;
+	document.getElementById("txtalgoritmo1D").innerHTML = "SIA:"+info.sia;
+	document.getElementById("txtalgoritmo1C").innerHTML = "Corte:"+info.cut;
+}
 
 
-/*----------Nivel 5 aplicaciones-------*/
+/*-Algoritmo 2*/
+function algoritmoB() {
+alert('Algoritmo 2')
 
-/* -Agregar aplicaciones en la proxima entrega
--Aplicacion 1
--Aplicacion 2
--Aplicacion 3 */
+}
 
+
+
+
+let algoritmoC = () => {
+	let url="http://localhost:7000/restApi/grafo/a1";
+	let data=obtiene_grafo_actual();
+	data.nombre = this.nombre;
+	data.tipo = this.tipo;
+
+	axios.post(url, data, options).then(response => {
+		console.log('algoritmoC corre sin problemas');
+		console.log(data);
+	}).catch(error => {
+		console.log(error);
+	});
+}
 
 /*----------Nivel 6 ventana-------*/
 
@@ -606,6 +641,9 @@ function modo_grafo() {
 
 }
 
+/*Nivel 5-2
+Permite ver el modo tabla
+*/
 function modo_tabla() {
 	/* deshabilita el modo grafico y activa el modo tabla */
 	var x = document.getElementById("grafica_grafo");
@@ -685,45 +723,12 @@ function modo_tabla() {
 
 
 
-
-
-
-
-
 	y.appendChild(tbl);
 
 
 
 }
 
-
-
-
-
-/* 	for (let i = 0; i < 3; i++) {
-		const tr = tbl.insertRow();
-		for (let j = 0; j < 2; j++) {
-			if (i === 2 && j === 1) {
-				break;
-			} else {
-				const td = tr.insertCell();
-				td.appendChild(document.createTextNode(`Cell I${i}/J${j}`));
-				td.style.border = '1px solid black';
-				if (i === 1 && j === 1) {
-					td.setAttribute('rowSpan', '2');
-				}
-			}
-		}
-	} */
-
-
-
-
-
-
-/*Nivel 5-2
-Permite ver el modo tabla
-*/
 
 /*----------Nivel 6 ayuda-------*/
 
@@ -754,3 +759,20 @@ document.querySelector("#boton123").addEventListener("click", () => {
 	funcion_prueba();
 });
 
+
+
+/* 	for (let i = 0; i < 3; i++) {
+		const tr = tbl.insertRow();
+		for (let j = 0; j < 2; j++) {
+			if (i === 2 && j === 1) {
+				break;
+			} else {
+				const td = tr.insertCell();
+				td.appendChild(document.createTextNode(`Cell I${i}/J${j}`));
+				td.style.border = '1px solid black';
+				if (i === 1 && j === 1) {
+					td.setAttribute('rowSpan', '2');
+				}
+			}
+		}
+	} */
